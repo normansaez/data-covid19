@@ -10,23 +10,39 @@ from flask import request
 #import comunas_mongo
 
 app = Flask(__name__)
+client = pymongo.MongoClient('mongodb://192.168.2.223:27017/')
 
+def dump_func_name(func):
+    def echo_func(*func_args, **func_kwargs):
+        app.logger.info('EXEC: {}'.format(func.__name__))
+        return func(*func_args, **func_kwargs)
+    return echo_func
+
+#@dump_func_name
 @app.route('/health_check', methods=['GET'])
 def empty_view():
-    app.logger.info('health check')
     response = {'status': 'OK'}
     return jsonify(response), 200
 
+#@dump_func_name
 @app.route('/get_comunas', methods=['GET'])
 def get_comunas():
-#    comunas = comunas_mongo.get_comunas()
-    client = pymongo.MongoClient('mongodb://192.168.2.223:27017/')
     db = client["comunas"]
     comunas = db.list_collection_names()
-#    print(comunas)
-#    print(type(comunas))
-#    c = json.dumps(comunas)
     response = {'comunas':comunas} 
+    return jsonify(response), 200
+
+#@dump_func_name
+@app.route('/get_comuna_by_name', methods=['GET'])
+def get_comuna_by_name():
+    comuna = request.args.get('comuna')
+    app.logger.info("Comuna: {}".format(comuna))
+    db = client["comunas"]
+    col = db[comuna] 
+    x = col.find_one()
+    app.logger.info(x)
+    print(type(x))
+    response = {'comuna': x}
     return jsonify(response), 200
 
 if __name__ == "__main__":
