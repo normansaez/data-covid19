@@ -2,7 +2,6 @@
 FROM alpine:3.7
 
 WORKDIR /app
-RUN mkdir -p bin
 
 ### 2. Get Java via the package manager
 RUN apk update \
@@ -29,7 +28,7 @@ rm -r /root/.cache
 #Prepare imports
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
-COPY app.py .
+COPY . .
 
 #Prepare environment
 
