@@ -3,14 +3,18 @@ import time
 import json
 import pymongo 
 
+
 from flask import Flask
 from flask import jsonify
 from flask import request
 
-#import comunas_mongo
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
-client = pymongo.MongoClient('mongodb://192.168.2.223:27017/')
+
+app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/comunas"
+mongo = PyMongo(app)
+
 
 def dump_func_name(func):
     def echo_func(*func_args, **func_kwargs):
@@ -21,28 +25,37 @@ def dump_func_name(func):
 #@dump_func_name
 @app.route('/health_check', methods=['GET'])
 def empty_view():
+    app.logger.info("health_check")
     response = {'status': 'OK'}
     return jsonify(response), 200
 
 #@dump_func_name
 @app.route('/get_comunas', methods=['GET'])
 def get_comunas():
-    db = client["comunas"]
-    comunas = db.list_collection_names()
+    app.logger.info("get_comunas")
+    comunas = mongo.db.list_collection_names()
     response = {'comunas':comunas} 
     return jsonify(response), 200
 
 #@dump_func_name
 @app.route('/get_comuna_by_name', methods=['GET'])
 def get_comuna_by_name():
+    app.logger.info("get_comuna_by_name")
     comuna = request.args.get('comuna')
     app.logger.info("Comuna: {}".format(comuna))
-    db = client["comunas"]
-    col = db[comuna] 
+
+    db = mongo.db.comunas
+    app.logger.info(type(db))
+    col = db[comuna]
+    app.logger.info(type(col))
+
+#    x = col.find_one()
+#    col = mongo.db.comuna.find_one()
     x = col.find_one()
     app.logger.info(x)
-    print(type(x))
-    response = {'comuna': x}
+#    print(type(x))
+#    response = {'comuna': x}
+    response = {'status': 'OK'}
     return jsonify(response), 200
 
 if __name__ == "__main__":
