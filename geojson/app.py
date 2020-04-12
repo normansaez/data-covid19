@@ -12,9 +12,10 @@ from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
-#app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/comunas"
-app.config["MONGO_URI"] = "mongodb://localhost:27017/comunas"
+app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/comunas"
+#app.config["MONGO_URI"] = "mongodb://localhost:27017/comunas"
 mongo = PyMongo(app)
+client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
 
 
 def dump_func_name(func):
@@ -42,18 +43,33 @@ def get_comunas():
 @app.route('/get_comuna_by_name', methods=['GET'])
 def get_comuna_by_name():
     app.logger.info("get_comuna_by_name")
-    comuna = request.args.get('comuna')
-    app.logger.info("Comuna: {}".format(comuna))
+    comuna_id = request.args.get('comuna')
+    app.logger.info("Comuna ID: {}".format(comuna_id))
+    db = client['comunas']
+    collec = db[comuna_id]
+    doc = collec.find_one()
+    doc.pop("_id",None)
+#    print(doc)
+#    app.logger.info(" {}".format(doc))
+#    app.logger.info(type(doc))
+#    for key, val in doc.items():
+#        print(">>>"*80)
+#        print(key)
+#        print("="*80)
+#        print(val)
+#        print("<<<"*80)
+#    collection = mongo.db.get_collection[comuna_id]
+#    for i in collection:
+#        print(i)
+#    db = mongo.db.comunas
+#    app.logger.info(type(db))
+#    collection = db[comuna_id]
+#    app.logger.info(type(collection))
+#    document = collection[comuna_id].find()
+#    app.logger.info(type(document))
 
-    db = mongo.db.comunas
-    app.logger.info(type(db))
-    col = db[comuna]
-    app.logger.info(type(col))
-
-    x = col.find()
-    app.logger.info(x)
-
-    response = {'status': 'OK'}
+#    response = {'status': 'OK'}
+    response = doc
     return jsonify(response), 200
 
 if __name__ == "__main__":
