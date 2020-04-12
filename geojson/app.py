@@ -12,7 +12,8 @@ from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
-app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/comunas"
+#app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/comunas"
+app.config["MONGO_URI"] = "mongodb://localhost:27017/comunas"
 mongo = PyMongo(app)
 
 
@@ -49,12 +50,9 @@ def get_comuna_by_name():
     col = db[comuna]
     app.logger.info(type(col))
 
-#    x = col.find_one()
-#    col = mongo.db.comuna.find_one()
-    x = col.find_one()
+    x = col.find()
     app.logger.info(x)
-#    print(type(x))
-#    response = {'comuna': x}
+
     response = {'status': 'OK'}
     return jsonify(response), 200
 
