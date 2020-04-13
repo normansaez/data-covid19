@@ -82,6 +82,8 @@ def get_comuna_by_cut():
     else:
         doc.pop("_id",None)
     #Topo
+    #using 
+    # https://gist.github.com/arthur-e/8495616
     ts = datetime.datetime.now().timestamp()
     geo = "{}.{}".format(ts,'json')
     topo = "topo_{}.{}".format(ts,'json')
