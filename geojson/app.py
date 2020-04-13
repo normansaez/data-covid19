@@ -68,12 +68,12 @@ def get_comuna_by_cut():
     '''
     app.logger.info("get_comuna_by_cut")
     try:
-        comuna_id = request.args.get('comuna')
-        simpl_number = request.args.get('simpl_number')
-        app.logger.info("Comuna ID: {}".format(comuna_id))
-        app.logger.info("Simpl number: {}".format(simpl_number))
+        comuna_cut = request.args.get('comuna')
+        simplify = request.args.get('simplify')
+        app.logger.info("Comuna ID: {}".format(comuna_cut))
+        app.logger.info("Simpl number: {}".format(simplify))
         db = client['comunas']
-        collec = db[comuna_id]
+        collec = db[comuna_cut]
     except pymongo.errors.InvalidName:
         return jsonify({"status":"empty field"}), 200
     doc = collec.find_one()
@@ -91,7 +91,8 @@ def get_comuna_by_cut():
     with open(geo, 'w') as outfile:
         json.dump(doc, outfile)
 
-    cmd = "geo2topo {} -q {} -o {}".format(geo, simpl_number, topo)
+    cmd = "geo2topo {} | toposimplify -p {} -o {}".format(geo, simplify, topo)
+#    geo2topo <geojson filename> | toposimplify -p <simplify parameter>
     process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
     process.wait()
     with open(topo) as json_file:

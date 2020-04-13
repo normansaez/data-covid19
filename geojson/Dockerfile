@@ -15,7 +15,7 @@ ENV PYTHONUNBUFFERED 1
 #RUN ./configure --enable-python && make -j $(nproc) && make install
 #RUN ldconfig
 #RUN geos-config --cflags
-RUN apt-get update && apt-get install -y binutils libproj-dev gdal-bin vim bash npm
+RUN apt-get update && apt-get install -y vim bash npm # binutils libproj-dev gdal-bin vim bash npm
 RUN npm install -g topojson
 RUN npm install -g geojson
 
