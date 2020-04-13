@@ -8,7 +8,8 @@ import pymongo
 import gridfs
 
 if __name__ == '__main__':
-    client = pymongo.MongoClient()
+#    client = pymongo.MongoClient()
+    client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
     db = client["comunas"]
     fs = gridfs.GridFS(client.comunas)
 

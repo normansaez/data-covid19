@@ -47,7 +47,6 @@ def get_comuna_by_name():
         comuna_id = request.args.get('comuna')
         app.logger.info("Comuna ID: {}".format(comuna_id))
         db = client['comunas']
-
         collec = db[comuna_id]
     except pymongo.errors.InvalidName:
         return jsonify({"status":"empty field"}), 200
