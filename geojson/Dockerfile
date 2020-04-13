@@ -1,47 +1,27 @@
-### 1. Get Linux
-FROM alpine:3.7
+FROM python:3.6
+
+ENV PYTHONUNBUFFERED 1
+
+#### Install GEOS ####
+# Inspired by: https://hub.docker.com/r/cactusbone/postgres-postgis-sfcgal/~/dockerfile/
+
+ENV GEOS http://download.osgeo.org/geos/geos-3.6.2.tar.bz2
+
+ADD $GEOS /install-postgis/
+WORKDIR /install-postgis/geos-3.6.2/
+
+RUN cd .. && tar jxvf geos-3.6.2.tar.bz2
+#
+RUN ./configure --enable-python && make -j $(nproc) && make install
+RUN ldconfig
+RUN geos-config --cflags
+RUN apt-get update && apt-get install -y binutils libproj-dev gdal-bin 
 
 WORKDIR /app
-
-### 2. Get Java via the package manager
-RUN apk update \
-&& apk upgrade \
-&& apk add --no-cache bash \
-&& apk add --no-cache --virtual=build-dependencies unzip \
-&& apk add --no-cache curl \
-&& apk add --no-cache vim
-#&& apk add --no-cache openjdk8-jre
-
-### 3. Get Python, PIP
-
-RUN apk add --no-cache python3 \
-&& apk add --update curl gcc g++ \
-&& apk add python3-dev \
-&& ln -s /usr/include/locale.h /usr/include/xlocale.h \
-&& python3 -m ensurepip \
-&& pip3 install --upgrade pip setuptools \
-&& rm -r /usr/lib/python*/ensurepip && \
-if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
-if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
-rm -r /root/.cache
-
 #Prepare imports
 COPY ./requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 COPY . .
-
-#Prepare environment
-
-################################################################
-#XXX: Remove this when we have an service account to download it
-#     also we should unremove the last line in prepare_env.py
-################################################################
-
-#### OPTIONAL : 4. SET JAVA_HOME environment variable, uncomment the line below if you need it
-
-#ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
-
-####
-
 EXPOSE 5000
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "--log-level", "INFO", "--timeout", "900", "app:app"]
+
