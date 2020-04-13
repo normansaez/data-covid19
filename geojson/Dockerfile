@@ -1,21 +1,23 @@
-FROM python:3.6
+FROM python:3.7
 
 ENV PYTHONUNBUFFERED 1
 
 #### Install GEOS ####
 # Inspired by: https://hub.docker.com/r/cactusbone/postgres-postgis-sfcgal/~/dockerfile/
 
-ENV GEOS http://download.osgeo.org/geos/geos-3.6.2.tar.bz2
-
-ADD $GEOS /install-postgis/
-WORKDIR /install-postgis/geos-3.6.2/
-
-RUN cd .. && tar jxvf geos-3.6.2.tar.bz2
+#ENV GEOS http://download.osgeo.org/geos/geos-3.6.2.tar.bz2
 #
-RUN ./configure --enable-python && make -j $(nproc) && make install
-RUN ldconfig
-RUN geos-config --cflags
-RUN apt-get update && apt-get install -y binutils libproj-dev gdal-bin 
+#ADD $GEOS /install-postgis/
+#WORKDIR /install-postgis/geos-3.6.2/
+#
+#RUN cd .. && tar jxvf geos-3.6.2.tar.bz2
+##
+#RUN ./configure --enable-python && make -j $(nproc) && make install
+#RUN ldconfig
+#RUN geos-config --cflags
+RUN apt-get update && apt-get install -y binutils libproj-dev gdal-bin vim bash npm
+RUN npm install -g topojson
+RUN npm install -g geojson
 
 WORKDIR /app
 #Prepare imports

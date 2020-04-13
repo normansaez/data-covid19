@@ -2,11 +2,12 @@ import logging
 import time
 import json
 import pymongo 
-
+import datetime
 
 from flask import Flask
 from flask import jsonify
 from flask import request
+from subprocess import Popen, PIPE
 
 from flask_pymongo import PyMongo
 
@@ -80,7 +81,20 @@ def get_comuna_by_cut():
         response = {"status":"not found"}
     else:
         doc.pop("_id",None)
-        response = doc
+    #Topo
+    ts = datetime.datetime.now().timestamp()
+    geo = "{}.{}".format(ts,'json')
+    topo = "topo_{}.{}".format(ts,'json')
+
+    with open(geo, 'w') as outfile:
+        json.dump(doc, outfile)
+
+    cmd = "geo2topo {} -q {} -o {}".format(geo, simpl_number, topo)
+    process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
+    process.wait()
+    with open(topo) as json_file:
+        data = json.load(json_file)
+    response = data
     return jsonify(response), 200
 
 @app.route('/v1/get_region_by_id', methods=['GET'])
