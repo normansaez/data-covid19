@@ -66,8 +66,21 @@ def get_comuna_by_cut():
     - Me retornas el topojson de la comuna correspondiente
     '''
     app.logger.info("get_comuna_by_cut")
-    comuna_id = request.args.get('comuna')
-    app.logger.info("Comuna ID: {}".format(comuna_id))
+    try:
+        comuna_id = request.args.get('comuna')
+        simpl_number = request.args.get('simpl_number')
+        app.logger.info("Comuna ID: {}".format(comuna_id))
+        app.logger.info("Simpl number: {}".format(simpl_number))
+        db = client['comunas']
+        collec = db[comuna_id]
+    except pymongo.errors.InvalidName:
+        return jsonify({"status":"empty field"}), 200
+    doc = collec.find_one()
+    if doc == None:
+        response = {"status":"not found"}
+    else:
+        doc.pop("_id",None)
+        response = doc
     return jsonify(response), 200
 
 @app.route('/v1/get_region_by_id', methods=['GET'])
