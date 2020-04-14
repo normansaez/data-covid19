@@ -13,8 +13,8 @@ from flask_pymongo import PyMongo
 
 app = Flask(__name__)
 
-app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/comunas"
-#app.config["MONGO_URI"] = "mongodb://localhost:27017/comunas"
+#app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/regiones"
+app.config["MONGO_URI"] = "mongodb://localhost:27017/comunas"
 mongo = PyMongo(app)
 client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
 
@@ -26,6 +26,17 @@ def health_check():
     '''
     app.logger.info("health_check")
     response = {'status': 'OK'}
+    return jsonify(response), 200
+
+@app.route('/v1/get_regiones', methods=['GET'])
+def get_regiones():
+    '''
+    get_regiones
+    '''
+    app.logger.info("get_regiones")
+    db = client['regiones']
+    regiones = db.list_collection_names()
+    response = {'regiones':regiones} 
     return jsonify(response), 200
 
 @app.route('/v1/get_comunas', methods=['GET'])
@@ -59,46 +70,47 @@ def get_comuna_by_name():
         response = doc
     return jsonify(response), 200
 
-@app.route('/v1/get_comuna_by_cut', methods=['GET'])
-def get_comuna_by_cut():
+@app.route('/v1/get_comuna_by_region_id', methods=['GET'])
+def get_comuna_by_region_id():
     '''
-    get_comuna_by_cut:
-    - Te paso el código de comuna y el parámetro de simplificación
-    - Me retornas el topojson de la comuna correspondiente
+    - Te paso el código de región y el parámetro de simplificación
+    - Me retornas el topojson de la región correspondiente
+    
+    (Este no lo tengo tan definido en estructura ni nombre, pero nos puede ahorrar
+    tiempo evitando hacer tantos requests por cada región. Siempre vamos a pedir
+    todos los polígonos de las comunas de la región a visualizar)
     '''
-    app.logger.info("get_comuna_by_cut")
     try:
-        comuna_cut = request.args.get('comuna')
+        region_cut = request.args.get('region')
         simplify = request.args.get('simplify')
-        app.logger.info("Comuna ID: {}".format(comuna_cut))
-        app.logger.info("Simpl number: {}".format(simplify))
+        app.logger.info("Comuna ID: {}".format(region_cut))
+        app.logger.info("simplify: {}".format(simplify))
         db = client['comunas']
-        collec = db[comuna_cut]
+        collec = db[region_cut]
+        doc = collec.find_one()
+        if doc == None:
+            response = {"status":"not found"}
+        else:
+            doc.pop("_id",None)
+#        app.logger.info(doc)
+        # https://gist.github.com/arthur-e/8495616
+        ts = datetime.datetime.now().timestamp()
+        geo = "{}.{}".format(ts,'json')
+        topo = "topo_{}.{}".format(ts,'json')
+
+        with open(geo, 'w') as outfile:
+            json.dump(doc, outfile)
+
+        cmd = "toposimplify {} -p {} -o {}".format(geo, simplify, topo)
+        app.logger.info(cmd)
+        process = Popen(cmd , stdout=subprocess.DEVNULL , stderr=subprocess.DEVNULL , shell=True)
+        process.wait()
+        with open(topo) as json_file:
+            data = json.load(json_file)
+        response = data
+        return jsonify(response), 200
     except pymongo.errors.InvalidName:
         return jsonify({"status":"empty field"}), 200
-    doc = collec.find_one()
-    if doc == None:
-        response = {"status":"not found"}
-    else:
-        doc.pop("_id",None)
-    #Topo
-    #using 
-    # https://gist.github.com/arthur-e/8495616
-    ts = datetime.datetime.now().timestamp()
-    geo = "{}.{}".format(ts,'json')
-    topo = "topo_{}.{}".format(ts,'json')
-
-    with open(geo, 'w') as outfile:
-        json.dump(doc, outfile)
-
-    cmd = "geo2topo {} | toposimplify -p {} -o {}".format(geo, simplify, topo)
-#    geo2topo <geojson filename> | toposimplify -p <simplify parameter>
-    process = Popen(cmd , stdout=PIPE , stderr=PIPE , shell=True)
-    process.wait()
-    with open(topo) as json_file:
-        data = json.load(json_file)
-    response = data
-    return jsonify(response), 200
 
 @app.route('/v1/get_region_by_id', methods=['GET'])
 def get_region_by_id():
@@ -111,23 +123,38 @@ def get_region_by_id():
     tiempo evitando hacer tantos requests por cada región. Siempre vamos a pedir
     todos los polígonos de las comunas de la región a visualizar)
     '''
-    app.logger.info("get_region_by_id")
-    comuna_id = request.args.get('comuna')
-    app.logger.info("Comuna ID: {}".format(comuna_id))
-    return jsonify(response), 200
+    try:
+        region_id = request.args.get('region')
+        simplify = request.args.get('simplify')
+        app.logger.info("Region ID: {}".format(region_id))
+        app.logger.info("simplify: {}".format(simplify))
+        db = client['regiones']
+        collec = db[region_id]
+        doc = collec.find_one()
+        if doc == None:
+            response = {"status":"not found"}
+        else:
+            doc.pop("_id",None)
+        app.logger.info(doc)
+        #Topo
+        #using 
+        # https://gist.github.com/arthur-e/8495616
+        ts = datetime.datetime.now().timestamp()
+        geo = "{}.{}".format(ts,'json')
+        topo = "topo_{}.{}".format(ts,'json')
 
-@app.route('/v1/get_comunas_by_region_id', methods=['GET'])
-def get_comunas_by_region_id():
-    '''
-    get_comunas_by_region_id:
-    - Te paso el código de región y el parámetro de simplificación
-    - Me retornas el topojson con los polígonos de todas las comunas de la región correspondiente
-    
-    '''
-    app.logger.info("get_comunas_by_region_id")
-    comuna_id = request.args.get('comuna')
-    app.logger.info("Comuna ID: {}".format(comuna_id))
-    return jsonify(response), 200
+        with open(geo, 'w') as outfile:
+            json.dump(doc, outfile)
+
+        cmd = "toposimplify {} -p {} -o {}".format(geo, simplify, topo)
+        process = Popen(cmd , stdout=subprocess.DEVNULL , stderr=subprocess.DEVNULL , shell=True)
+        process.wait()
+        with open(topo) as json_file:
+            data = json.load(json_file)
+        response = data
+        return jsonify(response), 200
+    except pymongo.errors.InvalidName:
+        return jsonify({"status":"empty field"}), 200
 
 
 if __name__ == "__main__":
