@@ -7,7 +7,7 @@ import datetime
 from flask import Flask
 from flask import jsonify
 from flask import request
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, DEVNULL
 
 from flask_pymongo import PyMongo
 
@@ -102,8 +102,8 @@ def get_comuna_by_region_id():
             json.dump(doc, outfile)
 
         cmd = "toposimplify {} -p {} -o {}".format(geo, simplify, topo)
-        app.logger.info(cmd)
-        process = Popen(cmd , stdout=subprocess.DEVNULL , stderr=subprocess.DEVNULL , shell=True)
+#        app.logger.info(cmd)
+        process = Popen(cmd , stdout=DEVNULL , stderr=DEVNULL , shell=True)
         process.wait()
         with open(topo) as json_file:
             data = json.load(json_file)
@@ -135,7 +135,7 @@ def get_region_by_id():
             response = {"status":"not found"}
         else:
             doc.pop("_id",None)
-        app.logger.info(doc)
+#        app.logger.info(doc)
         #Topo
         #using 
         # https://gist.github.com/arthur-e/8495616
@@ -147,7 +147,7 @@ def get_region_by_id():
             json.dump(doc, outfile)
 
         cmd = "toposimplify {} -p {} -o {}".format(geo, simplify, topo)
-        process = Popen(cmd , stdout=subprocess.DEVNULL , stderr=subprocess.DEVNULL , shell=True)
+        process = Popen(cmd , stdout=DEVNULL , stderr=DEVNULL , shell=True)
         process.wait()
         with open(topo) as json_file:
             data = json.load(json_file)
