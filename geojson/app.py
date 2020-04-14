@@ -60,25 +60,21 @@ def get_comuna_by_name():
         app.logger.info("Comuna ID: {}".format(comuna_id))
         db = client['comunas']
         collec = db[comuna_id]
-    except pymongo.errors.InvalidName:
-        return jsonify({"status":"empty field"}), 200
-    doc = collec.find_one()
-    if doc == None:
-        response = {"status":"not found"}
-    else:
+        doc = collec.find_one()
+        if doc == None:
+            return jsonify({"status":"not found"}), 200
         doc.pop("_id",None)
         response = doc
-    return jsonify(response), 200
+        return jsonify(response), 200
+    except pymongo.errors.InvalidName:
+        return jsonify({"status":"empty field"}), 200
 
 @app.route('/v1/get_comuna_by_region_id', methods=['GET'])
 def get_comuna_by_region_id():
     '''
     - Te paso el código de región y el parámetro de simplificación
-    - Me retornas el topojson de la región correspondiente
+    - Me retornas el topojson de las comunas a la  región correspondiente
     
-    (Este no lo tengo tan definido en estructura ni nombre, pero nos puede ahorrar
-    tiempo evitando hacer tantos requests por cada región. Siempre vamos a pedir
-    todos los polígonos de las comunas de la región a visualizar)
     '''
     try:
         region_cut = request.args.get('region')
@@ -89,10 +85,8 @@ def get_comuna_by_region_id():
         collec = db[region_cut]
         doc = collec.find_one()
         if doc == None:
-            response = {"status":"not found"}
-        else:
-            doc.pop("_id",None)
-#        app.logger.info(doc)
+            return jsonify({"status":"not found"}), 200
+        doc.pop("_id",None)
         # https://gist.github.com/arthur-e/8495616
         ts = datetime.datetime.now().timestamp()
         geo = "{}.{}".format(ts,'json')
@@ -118,10 +112,6 @@ def get_region_by_id():
     get_region_by_id: 
     - Te paso el código de región y el parámetro de simplificación
     - Me retornas el topojson de la región correspondiente
-    
-    (Este no lo tengo tan definido en estructura ni nombre, pero nos puede ahorrar
-    tiempo evitando hacer tantos requests por cada región. Siempre vamos a pedir
-    todos los polígonos de las comunas de la región a visualizar)
     '''
     try:
         region_id = request.args.get('region')
@@ -132,9 +122,8 @@ def get_region_by_id():
         collec = db[region_id]
         doc = collec.find_one()
         if doc == None:
-            response = {"status":"not found"}
-        else:
-            doc.pop("_id",None)
+            return jsonify({"status":"not found"}), 200
+        doc.pop("_id",None)
         app.logger.info(doc)
         #Topo
         #using 
