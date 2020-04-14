@@ -25,5 +25,5 @@ COPY ./requirements.txt .
 RUN pip3 install -r requirements.txt
 COPY . .
 EXPOSE 5000
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "--log-level", "INFO", "--timeout", "900", "app:app"]
+CMD ["gunicorn", "-w","10", "-b", "0.0.0.0:5000", "--log-level", "INFO", "--timeout", "900", "app:app"]
 
