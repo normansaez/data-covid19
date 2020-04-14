@@ -9,6 +9,6 @@ WORKDIR /app
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
-EXPOSE 6000
-CMD ["gunicorn", "-b", "0.0.0.0:6000", "--log-level", "INFO", "--timeout", "900", "app:app"]
+EXPOSE 5001
+CMD ["gunicorn", "-b", "0.0.0.0:5001", "--log-level", "INFO", "--timeout", "900", "app:app"]
 
