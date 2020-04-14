@@ -19,7 +19,7 @@ def health_check():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True, ssl_context=('cert.pem', 'key.pem'))
 else:
     # setup logging using gunicorn logger
     formatter = logging.Formatter(
