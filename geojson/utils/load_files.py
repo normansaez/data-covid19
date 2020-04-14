@@ -14,7 +14,7 @@ if __name__ == '__main__':
     fs = gridfs.GridFS(client.comunas)
 
     files = []
-    path = Path('.').rglob('*.json')
+    path = Path('.').rglob('*.topo')
     #    path.rename(path.name.replace(' ','_'))
     for i in path:
        files.append(i.name)
@@ -26,7 +26,7 @@ if __name__ == '__main__':
             json_data = json.load(jsonfile)
         #print(json_data)
         
-        col = db[name.rstrip('.json')]
+        col = db[name.rstrip('.topo')]
         try:
             x = col.insert_one(json_data)
         #    print(x)
