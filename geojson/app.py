@@ -9,13 +9,8 @@ from flask import jsonify
 from flask import request
 from subprocess import Popen, PIPE, DEVNULL
 
-from flask_pymongo import PyMongo
-
 app = Flask(__name__)
 
-#app.config["MONGO_URI"] = "mongodb://192.168.2.223:27017/regiones"
-app.config["MONGO_URI"] = "mongodb://localhost:27017/comunas"
-mongo = PyMongo(app)
 client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
 
 
@@ -45,7 +40,8 @@ def get_comunas():
     get_comunas
     '''
     app.logger.info("get_comunas")
-    comunas = mongo.db.list_collection_names()
+    db = client['comunas']
+    comunas = db.list_collection_names()
     response = {'comunas':comunas} 
     return jsonify(response), 200
 
