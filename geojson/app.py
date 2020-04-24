@@ -8,8 +8,10 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 from subprocess import Popen, PIPE, DEVNULL
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
 
