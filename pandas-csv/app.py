@@ -5,6 +5,7 @@ import pandas as pd
 from flask import Flask
 from flask import jsonify
 from flask import request
+import datetime
 import pymongo
 
 app = Flask(__name__)
@@ -26,19 +27,27 @@ def get_movilidad():
     get_movilidad
     '''
     app.logger.info("get_movilidad")
-#    app.logger.info("get_comunas")
-#    db = client['comunas']
-#    comunas = db.list_collection_names()
-#    response = {'comunas':comunas} 
-    read_file = pd.read_csv(r'movilidad_ene2019.csv')
-    response = json.loads(read_file.to_json(orient="index"))
-#    response = {'status': resp}
 
+    monthinteger = int(request.args.get('month'))
+    year = request.args.get('year')
+    month = datetime.date(1900, monthinteger, 1).strftime('%b').upper()
+
+    app.logger.info("month: {}".format(month))
+    app.logger.info("year: {}".format(year))
+
+    movi = "{}-{}".format(year,month)
+    db = client['movilidad']
+    collec = db[movi]
+    doc = collec.find_one()
+    if doc == None:
+        return jsonify({"status":"not found"}), 200
+    doc.pop("_id",None)
+    response = doc
     return jsonify(response), 200
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context=('cert.pem', 'key.pem'))
+    app.run(host="0.0.0.0", port=5004, debug=True, ssl_context=('cert.pem', 'key.pem'))
 else:
     # setup logging using gunicorn logger
     formatter = logging.Formatter(
