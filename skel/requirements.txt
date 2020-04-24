@@ -4,4 +4,8 @@ pymongo==3.10.1
 pyopenssl==19.1.0
 #requests-oauthlib
 #Flask-OAuthlib
+datetime
+uuid
+Flask-SQLAlchemy
+PyJWT
 
