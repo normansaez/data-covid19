@@ -10,7 +10,7 @@ import gridfs
 if __name__ == '__main__':
 #    client = pymongo.MongoClient()
     client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
-    db = client["comunas"]
+    db = client["regiones"]
     fs = gridfs.GridFS(client.comunas)
 
     files = []
