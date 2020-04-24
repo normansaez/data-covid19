@@ -6,7 +6,7 @@ import os
 import json
 import pymongo
 import datetime
-
+import pandas as pd
 
 if __name__ == '__main__':
 #    client = pymongo.MongoClient()
@@ -21,9 +21,10 @@ if __name__ == '__main__':
         month = datetime.date(1900, monthinteger, 1).strftime('%b').upper()
         read_file = pd.read_csv(filename.name)
         json_data = json.loads(read_file.to_json(orient="index"))
+#        print(json_data)
         col = db["{}-{}".format(year,month)]
-        print(month)
-        print(year)
+#        print(month)
+#        print(year)
         try:
             x = col.insert_one(json_data)
         except pymongo.errors.DocumentTooLarge:
