@@ -20,18 +20,19 @@ def health_check():
     response = {'status': 'OK'}
     return jsonify(response), 200
 
-@app.route('/v1/ingest_raw', methods=['GET'])
-def get_comunas():
+@app.route('/v1/get_movilidad', methods=['GET'])
+def get_movilidad():
     '''
-    get_comunas
+    get_movilidad
     '''
+    app.logger.info("get_movilidad")
 #    app.logger.info("get_comunas")
 #    db = client['comunas']
 #    comunas = db.list_collection_names()
 #    response = {'comunas':comunas} 
-    read_file = pd.read_excel (r'movilidad_ene2019.csv')
-    mycsv = read_file.to_csv (r'name.csv', index = None, header=True)
-    response = {'status': mycsv}
+    read_file = pd.read_csv(r'movilidad_ene2019.csv')
+    response = json.loads(read_file.to_json(orient="index"))
+#    response = {'status': resp}
 
     return jsonify(response), 200
 
