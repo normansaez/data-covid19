@@ -11,7 +11,8 @@ import pandas as pd
 if __name__ == '__main__':
 #    client = pymongo.MongoClient()
     client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
-    db = client["movilidad"]
+    db = client["movilidad_by_cut"]
+#    db.movilidad.drop()
     path = Path('.').rglob('*.csv')
     for filename in path:
         print(filename.name)
