@@ -1,6 +1,7 @@
 Flask==1.1.1
 gunicorn==20.0.4
-pandas
+pandas==1.0.3
 pathlib==1.0.1
-pymongo
+pymongo==3.10.1
 xlrd==1.1.0
+#werkzeug==1.0.1
