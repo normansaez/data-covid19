@@ -14,5 +14,5 @@ RUN ln -s /etc/nginx/sites-available/reverse-proxy.conf /etc/nginx/sites-enabled
 RUN service nginx configtest
 RUN service nginx restart
 
-EXPOSE 80
+EXPOSE 5001
 CMD ["nginx", "-g", "daemon off;"]
