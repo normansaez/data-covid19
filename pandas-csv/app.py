@@ -7,6 +7,7 @@ from flask import jsonify
 from flask import request
 import datetime
 import pymongo
+#from werkzeug import secure_filename
 
 app = Flask(__name__)
 client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
@@ -70,6 +71,16 @@ def get_movilidad_by_cut():
     response = doc
     return jsonify(response), 200
 
+#@app.route('/upload')
+#def upload_file():
+#   return render_template('templates/upload.html')
+#	
+#@app.route('/uploader', methods = ['GET', 'POST'])
+#def upload_file():
+#   if request.method == 'POST':
+#      f = request.files['file']
+#      f.save(secure_filename(f.filename))
+#      return 'file uploaded successfully'
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5004, debug=True, ssl_context=('cert.pem', 'key.pem'))
