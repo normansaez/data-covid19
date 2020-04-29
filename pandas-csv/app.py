@@ -77,13 +77,6 @@ def get_movilidad_por_comuna():
     get_movilidad
     '''
     app.logger.info("v2: get_movilidad_por_comuna")
-#    monthinteger = int(request.args.get('month'))
-#    year = request.args.get('year')
-#    month = datetime.date(1900, monthinteger, 1).strftime('%b').upper()
-
-#    app.logger.info("month: {}".format(month))
-#    app.logger.info("year: {}".format(year))
-
     movi = "diaria-JAN"#"{}-{}".format(year,month)
 
     db = client['movilidad_por_comuna']
