@@ -44,4 +44,4 @@ COPY . .
 ####
 
 EXPOSE 5004
-CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:5004", "--log-level", "INFO", "--timeout", "900", "app:app"]
+CMD ["gunicorn", "-w", "5", "-b", "0.0.0.0:5004", "--log-level", "INFO", "--timeout", "900", "app:app"]
