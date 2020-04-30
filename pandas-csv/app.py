@@ -71,15 +71,17 @@ def get_movilidad_by_cut():
     response = doc
     return jsonify(response), 200
 
-@app.route('/v1/get_movilidad_por_comuna', methods=['GET'])
-def get_movilidad_por_comuna():
-    '''
-    get_movilidad
-    '''
-    app.logger.info("v2: get_movilidad_por_comuna")
-    movi = "diaria-JAN"#"{}-{}".format(year,month)
+#activos_comunas_dia_abril
+#activos_comunas_fecha_abril
 
-    db = client['movilidad_por_comuna']
+@app.route('/v1/activos_comunas_por_dia_contagio', methods=['GET'])
+def get_activos_comunas_dia_abril():
+    '''
+    '''
+    movi = "activos_comunas_dia_abril"
+#    activos_comunas_fecha_abril
+    app.logger.info("v1: activos_comunas_por_dia_contagio")
+    db = client['activos_comunas']
     collec = db[movi]
     doc = collec.find_one()
     if doc == None:
@@ -88,6 +90,37 @@ def get_movilidad_por_comuna():
     response = doc
     return jsonify(response), 200
 
+@app.route('/v1/activos_comunas_por_fecha_contagio', methods=['GET'])
+def get_activos_comunas_fecha_abril():
+    '''
+    '''
+    movi = "activos_comunas_fecha_abril"
+#    activos_comunas_fecha_abril
+    app.logger.info("v1: activos_comunas_por_fecha_contagio")
+    db = client['activos_comunas']
+    collec = db[movi]
+    doc = collec.find_one()
+    if doc == None:
+        return jsonify({"status":"not found"}), 200
+    doc.pop("_id",None)
+    response = doc
+    return jsonify(response), 200
+
+@app.route('/v1/contagios_acumulados_region', methods=['GET'])
+def get_contagios_acumulados_region():
+    '''
+    '''
+    movi = "contagios_acumulados_region"
+#    activos_comunas_fecha_abril
+    app.logger.info("v1: ontagios_acumulados_region")
+    db = client['activos_comunas']
+    collec = db[movi]
+    doc = collec.find_one()
+    if doc == None:
+        return jsonify({"status":"not found"}), 200
+    doc.pop("_id",None)
+    response = doc
+    return jsonify(response), 200
 #@app.route('/upload')
 #def upload_file():
 #   return render_template('templates/upload.html')
