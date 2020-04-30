@@ -157,6 +157,21 @@ def get_contagio_acumulado_():
     doc.pop("_id",None)
     response = doc
     return jsonify(response), 200
+
+@app.route('/v1/contagios_valpo', methods=['GET'])
+def contagios_valpo():
+    '''
+    '''
+    movi = "contagios_valpo"
+    app.logger.info("v1: contagios_valpo")
+    db = client['contagios_valpo']
+    collec = db[movi]
+    doc = collec.find_one()
+    if doc == None:
+        return jsonify({"status":"not found"}), 200
+    doc.pop("_id",None)
+    response = doc
+    return jsonify(response), 200
 #@app.route('/upload')
 #def upload_file():
 #   return render_template('templates/upload.html')
