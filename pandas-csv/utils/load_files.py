@@ -10,13 +10,13 @@ import pandas as pd
 
 if __name__ == '__main__':
     client = pymongo.MongoClient("mongodb://192.168.2.223:27017")
-    nombre_bd = "contagios_valpo"
-    collection = ""
+    nombre_bd = 'activos_comunas'
+    collection = "activos_comunas_dia_marzo"
     db = client[nombre_bd]
     path = Path('.').rglob('*.csv')
     for filename in path:
 #        print(filename.name)
-        collection = filename.name.rsplit('.csv')[0]
+#        collection = filename.name.rsplit('.csv')[0]
         print(collection)
         read_file = pd.read_csv(filename.name, encoding= 'unicode_escape')
         json_data = json.loads(read_file.to_json(orient="index"))

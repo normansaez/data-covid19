@@ -111,6 +111,22 @@ def get_activos_comunas_dia_abril():
     response = doc
     return jsonify(response), 200
 
+@app.route('/v1/activos_comunas_por_dia_contagio_marzo', methods=['GET'])
+def get_activos_comunas_dia_marzo():
+    '''
+    '''
+    movi = "activos_comunas_dia_marzo"
+#    activos_comunas_fecha_abril
+    app.logger.info("v1: activos_comunas_por_dia_contagio_marzo")
+    db = client['activos_comunas']
+    collec = db[movi]
+    doc = collec.find_one()
+    if doc == None:
+        return jsonify({"status":"not found"}), 200
+    doc.pop("_id",None)
+    response = doc
+    return jsonify(response), 200
+
 @app.route('/v1/activos_comunas_por_fecha_contagio', methods=['GET'])
 def get_activos_comunas_fecha_abril():
     '''
