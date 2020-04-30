@@ -16,7 +16,7 @@ if __name__ == '__main__':
     path = Path('.').rglob('*.csv')
     for filename in path:
 #        print(filename.name)
-        collection = filename.name.rsplit('_csv')[0]
+        collection = filename.name.rsplit('.csv')[0]
         print(collection)
         read_file = pd.read_csv(filename.name, encoding= 'unicode_escape')
         json_data = json.loads(read_file.to_json(orient="index"))

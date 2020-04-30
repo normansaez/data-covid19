@@ -162,7 +162,7 @@ def get_contagio_acumulado_():
 def contagios_valpo():
     '''
     '''
-    movi = "contagios_valpo"
+    movi = "contagiosvalpo"
     app.logger.info("v1: contagios_valpo")
     db = client['contagios_valpo']
     collec = db[movi]
