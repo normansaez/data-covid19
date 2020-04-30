@@ -121,6 +121,21 @@ def get_contagios_acumulados_region():
     doc.pop("_id",None)
     response = doc
     return jsonify(response), 200
+
+@app.route('/v1/contagio_acumulado_comuna', methods=['GET'])
+def get_contagio_acumulado_():
+    '''
+    '''
+    movi = "contagio_acumulado_comuna_marzo.csv"
+    app.logger.info("v1: contagio_acumulado_comuna")
+    db = client['activos_comunas']
+    collec = db[movi]
+    doc = collec.find_one()
+    if doc == None:
+        return jsonify({"status":"not found"}), 200
+    doc.pop("_id",None)
+    response = doc
+    return jsonify(response), 200
 #@app.route('/upload')
 #def upload_file():
 #   return render_template('templates/upload.html')
