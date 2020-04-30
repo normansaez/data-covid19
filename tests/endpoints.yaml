@@ -1,12 +1,12 @@
 endpoints:
-# - http://192.168.2.220:8080/covid19/getDatosMinSal
-# - http://192.168.2.220:8080/covid19/generaArchivoActivosT
-# - http://192.168.2.220:8080/covid19/cargaArchivoActivosT
- - http://192.168.2.220:8080/covid19/getDatosMinSalSummary?state=StateValue&comuna=ComunaValue
-# - http://192.168.2.223:5000/v1/get_region_by_id?region=12&simplify=0.1
-# - http://192.168.2.223:5000/v1/get_comuna_by_region_id?region=11&simpl_number=1
-# - http://192.168.2.248:5003/simulateuni
-# - http://192.168.2.248:5003/refineuni
+ - http://192.168.2.220:8080/covid19/getDatosMinSal
+ - http://192.168.2.220:8080/covid19/generaArchivoActivosT
+ - http://192.168.2.220:8080/covid19/cargaArchivoActivosT
+ - http://192.168.2.220:8080/covid19/getDatosMinSalSummary?state=13&comuna=13101
+ - http://192.168.2.223:5000/v1/get_region_by_id?region=12&simplify=0.1
+ - http://192.168.2.223:5000/v1/get_comuna_by_region_id?region=11&simpl_number=1
+ - http://192.168.2.248:5003/simulateuni
+ - http://192.168.2.248:5003/refineuni
  - http://192.168.2.223:5004/v2/get_movilidad?month=1&year=2019
  - http://192.168.2.223:5004/v1/get_movilidad?month=1&year=2019
  - http://192.168.2.223:5004/v1/get_movilidad_por_comuna
@@ -20,3 +20,4 @@ endpoints:
  - http://192.168.2.223:5004/v1/activos_comunas_por_fecha_contagio
  - http://192.168.2.223:5004/v1/contagios_acumulados_region
  - http://192.168.2.223:5004/v1/contagio_acumulado_comuna
+ - http://192.168.2.223:5004/v1/contagios_valpo
