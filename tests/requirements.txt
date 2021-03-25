@@ -1,4 +1,4 @@
 pandas==1.0.3
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.23.0
 pytest==5.4.1
